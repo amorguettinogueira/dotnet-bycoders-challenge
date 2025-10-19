@@ -1,0 +1,24 @@
+﻿@page
+@model IndexModel
+
+<h2>Transaction Types</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Nature</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var type in Model.TransactionTypes)
+        {
+            <tr>
+                <td>@type.TransactionTypeId</td>
+                <td>@type.Description</td>
+                <td>@type.Nature.ToString()</td>
+            </tr>
+        }
+    </tbody>
+</table>

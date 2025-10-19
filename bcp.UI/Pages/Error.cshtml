@@ -1,0 +1,13 @@
+﻿@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h1 class="text-danger">An error occurred while processing your request.</h1>
+<h2 class="text-danger">@(Model.ErrorMessage ?? "Unexpected error!")</h2>
+
+@if (Model.HttpErrorCode > 0)
+{
+    <p>This seems to be a HTTP error, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/@Model.HttpErrorCode">this</a> can help clarify what happened.</p>
+}
