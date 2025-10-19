@@ -1,3 +1,4 @@
+using bcp.Application.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace bcp.Application;

@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
@@ -14,9 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\bcp.Application\bcp.Application.csproj" />
     <ProjectReference Include="..\bcp.Infrastructure\bcp.Infrastructure.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="MediatR" Version="12.1.1" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
