@@ -1,0 +1,13 @@
+# docker-compose.yml
+services:
+  api:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+    image: bcp.api:0.0.0
+    container_name: bcp-api
+    ports:
+      - "5163:5163"
+    environment:
+      - ASPNETCORE_URLS=http://+:5163
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-development}
