@@ -79,5 +79,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         });
     }
 
-    public DbSet<TransactionType> TransactionTypes { get; set; }
+    public DbSet<Core.Models.File> Files { get; set; }
+    public DbSet<FileName> FileNames { get; set; }
+    public DbSet<Transaction> Transactions { get; set; }
+    public DbSet<Store> Stores { get; set; }
 }

@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 string apiBaseAddress = "http://api:5163";
 
-builder.Services.AddRefitClient<ITransactionTypeApi>()
+builder.Services.AddRefitClient<ITransactionFileApi>()
     .ConfigureHttpClient(c => c.BaseAddress = new Uri(apiBaseAddress));
 
 builder.Services.AddRazorPages();

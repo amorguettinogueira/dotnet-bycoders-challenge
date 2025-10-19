@@ -12,7 +12,7 @@ using bcp.Infrastructure.Persistence;
 namespace bcp.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251019165528_InitialCreate")]
+    [Migration("20251019202245_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -71,7 +71,7 @@ namespace bcp.Infrastructure.Migrations
                     b.HasIndex("FileSize", "FileHash")
                         .IsUnique();
 
-                    b.ToTable("File");
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("bcp.Core.Models.FileName", b =>
@@ -95,7 +95,7 @@ namespace bcp.Infrastructure.Migrations
                     b.HasIndex("FileId", "Name")
                         .IsUnique();
 
-                    b.ToTable("FileName");
+                    b.ToTable("FileNames");
                 });
 
             modelBuilder.Entity("bcp.Core.Models.Store", b =>
@@ -118,7 +118,7 @@ namespace bcp.Infrastructure.Migrations
 
                     b.HasKey("StoreId");
 
-                    b.ToTable("Store");
+                    b.ToTable("Stores");
                 });
 
             modelBuilder.Entity("bcp.Core.Models.Transaction", b =>
@@ -160,7 +160,7 @@ namespace bcp.Infrastructure.Migrations
 
                     b.HasIndex("TransactionTypeId");
 
-                    b.ToTable("Transaction");
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("bcp.Core.Models.TransactionType", b =>
@@ -180,7 +180,7 @@ namespace bcp.Infrastructure.Migrations
 
                     b.HasKey("TransactionTypeId");
 
-                    b.ToTable("TransactionTypes");
+                    b.ToTable("TransactionType");
 
                     b.HasData(
                         new

@@ -6,7 +6,7 @@ public static class ConnectionStringBuilder
     private const string PostgresDb = "POSTGRES_DB";
     private const string PostgresUser = "POSTGRES_USER";
     private const string PostgresPassword = "POSTGRES_PASSWORD";
-    
+
     public static string BuildFromEnvironment()
     {
         var dbName = Environment.GetEnvironmentVariable(PostgresDb) ??

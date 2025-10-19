@@ -30,7 +30,7 @@ namespace bcp.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "File",
+                name: "Files",
                 columns: table => new
                 {
                     FileId = table.Column<int>(type: "integer", nullable: false)
@@ -40,11 +40,11 @@ namespace bcp.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_File", x => x.FileId);
+                    table.PrimaryKey("PK_Files", x => x.FileId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Store",
+                name: "Stores",
                 columns: table => new
                 {
                     StoreId = table.Column<int>(type: "integer", nullable: false)
@@ -54,11 +54,11 @@ namespace bcp.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Store", x => x.StoreId);
+                    table.PrimaryKey("PK_Stores", x => x.StoreId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TransactionTypes",
+                name: "TransactionType",
                 columns: table => new
                 {
                     TransactionTypeId = table.Column<int>(type: "integer", nullable: false)
@@ -68,11 +68,11 @@ namespace bcp.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TransactionTypes", x => x.TransactionTypeId);
+                    table.PrimaryKey("PK_TransactionType", x => x.TransactionTypeId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "FileName",
+                name: "FileNames",
                 columns: table => new
                 {
                     FileNameId = table.Column<int>(type: "integer", nullable: false)
@@ -82,17 +82,17 @@ namespace bcp.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FileName", x => x.FileNameId);
+                    table.PrimaryKey("PK_FileNames", x => x.FileNameId);
                     table.ForeignKey(
-                        name: "FK_FileName_File_FileId",
+                        name: "FK_FileNames_Files_FileId",
                         column: x => x.FileId,
-                        principalTable: "File",
+                        principalTable: "Files",
                         principalColumn: "FileId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transaction",
+                name: "Transactions",
                 columns: table => new
                 {
                     TransactionId = table.Column<int>(type: "integer", nullable: false)
@@ -107,35 +107,35 @@ namespace bcp.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transaction", x => x.TransactionId);
+                    table.PrimaryKey("PK_Transactions", x => x.TransactionId);
                     table.ForeignKey(
-                        name: "FK_Transaction_Beneficiary_BeneficiaryId",
+                        name: "FK_Transactions_Beneficiary_BeneficiaryId",
                         column: x => x.BeneficiaryId,
                         principalTable: "Beneficiary",
                         principalColumn: "BeneficiaryId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Transaction_File_FileId",
+                        name: "FK_Transactions_Files_FileId",
                         column: x => x.FileId,
-                        principalTable: "File",
+                        principalTable: "Files",
                         principalColumn: "FileId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Transaction_Store_StoreId",
+                        name: "FK_Transactions_Stores_StoreId",
                         column: x => x.StoreId,
-                        principalTable: "Store",
+                        principalTable: "Stores",
                         principalColumn: "StoreId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Transaction_TransactionTypes_TransactionTypeId",
+                        name: "FK_Transactions_TransactionType_TransactionTypeId",
                         column: x => x.TransactionTypeId,
-                        principalTable: "TransactionTypes",
+                        principalTable: "TransactionType",
                         principalColumn: "TransactionTypeId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
-                table: "TransactionTypes",
+                table: "TransactionType",
                 columns: new[] { "TransactionTypeId", "Description", "Nature" },
                 values: new object[,]
                 {
@@ -151,35 +151,35 @@ namespace bcp.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_File_FileSize_FileHash",
-                table: "File",
-                columns: new[] { "FileSize", "FileHash" },
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FileName_FileId_Name",
-                table: "FileName",
+                name: "IX_FileNames_FileId_Name",
+                table: "FileNames",
                 columns: new[] { "FileId", "Name" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transaction_BeneficiaryId",
-                table: "Transaction",
+                name: "IX_Files_FileSize_FileHash",
+                table: "Files",
+                columns: new[] { "FileSize", "FileHash" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_BeneficiaryId",
+                table: "Transactions",
                 column: "BeneficiaryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transaction_FileId",
-                table: "Transaction",
+                name: "IX_Transactions_FileId",
+                table: "Transactions",
                 column: "FileId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transaction_StoreId",
-                table: "Transaction",
+                name: "IX_Transactions_StoreId",
+                table: "Transactions",
                 column: "StoreId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transaction_TransactionTypeId",
-                table: "Transaction",
+                name: "IX_Transactions_TransactionTypeId",
+                table: "Transactions",
                 column: "TransactionTypeId");
         }
 
@@ -187,22 +187,22 @@ namespace bcp.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "FileName");
+                name: "FileNames");
 
             migrationBuilder.DropTable(
-                name: "Transaction");
+                name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "Beneficiary");
 
             migrationBuilder.DropTable(
-                name: "File");
+                name: "Files");
 
             migrationBuilder.DropTable(
-                name: "Store");
+                name: "Stores");
 
             migrationBuilder.DropTable(
-                name: "TransactionTypes");
+                name: "TransactionType");
         }
     }
 }

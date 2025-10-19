@@ -12,7 +12,7 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, string connectionString)
     {
         _ = services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
-        _ = services.AddScoped<ITransactionTypeService, TransactionTypeService>();
+        _ = services.AddScoped<ITransactionFileService, TransactionFileService>();
         return services;
     }
 }
