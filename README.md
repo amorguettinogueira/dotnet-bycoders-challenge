@@ -96,12 +96,17 @@ Note: Docker Compose service names are `api`, `web`, `db`, and `worker`. Volumes
 Primary endpoints:
 - GET `/api/files` — List uploaded files
 - GET `/api/files/{id}/summary` — Store balance aggregation for a file
+- GET `/api/files/{fileId}/stores/{storeId}/transactions` — Transactions for a store in a file, sorted by date and time
 - POST `/api/files/upload` — Upload a `.txt` CNAB file (multipart form-data)
 - POST `/api/notifications/file-processed` — Internal endpoint used by the worker to notify the API, which then broadcasts to the UI via SignalR
 
-Example upload via curl:
+Examples:
 ```
+# Upload a file
 curl -F "file=@/path/to/file.txt" http://localhost:5163/api/files/upload
+
+# Get transactions for Store 2 in File 1
+curl http://localhost:5163/api/files/1/stores/2/transactions
 ```
 
 Real-time updates: When the worker finishes processing a file, the API publishes a `FileProcessed` SignalR event, and the Web UI automatically refreshes.
