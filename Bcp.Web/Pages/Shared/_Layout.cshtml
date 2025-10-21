@@ -12,23 +12,43 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
+        <nav class="navbar navbar-expand-md navbar-light bg-white border-bottom box-shadow">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">BCP</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-md-inline-flex justify-content-between">
                     <ul class="navbar-nav ms-auto">
+                        <!-- Offcanvas trigger visible on small screens -->
+                        <li class="nav-item d-md-none">
+                            <button class="btn btn-outline-secondary me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#filesOffcanvas" aria-controls="filesOffcanvas">
+                                Files
+                            </button>
+                        </li>
                         <li class="nav-item">
-                            <a class="nav-item text-dark fs-5" href="#" data-bs-toggle="modal" data-bs-target="#uploadModal">Import a file</a>
+                            <button class="btn btn-outline-secondary me-2" type="button" data-bs-toggle="modal" data-bs-target="#uploadModal" aria-controls="uploadModal">
+                                Import a file
+                            </button>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
+    <!-- Offcanvas for mobile file list -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="filesOffcanvas" aria-labelledby="filesOffcanvasLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="filesOffcanvasLabel">Files</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            @RenderSection("OffcanvasFiles", required: false)
+        </div>
+    </div>
+
     <div class="container">
         <main role="main" class="flex-grow-1">
             <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">

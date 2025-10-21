@@ -8,9 +8,10 @@ namespace Bcp.Web.Pages;
 public class IndexModel(ITransactionFileApi fileApi,
                         IFileUploadService fileUploadService) : PageModel
 {
-    public List<Application.DTOs.File> Files { get; set; } = new();
+    public List<Application.DTOs.File> Files { get; set; } = [];
     public FileSummary AggregatedData { get; set; } = new();
     public int? SelectedFileId { get; set; }
+
     [TempData]
     public string? StatusMessage { get; set; }
 
@@ -23,6 +24,13 @@ public class IndexModel(ITransactionFileApi fileApi,
         AggregatedData = await fileApi.GetAggregatedDataAsync(id);
         SelectedFileId = id;
         return Page();
+    }
+
+    // Drill-down: return transactions for a given file and store as JSON
+    public async Task<IActionResult> OnGetTransactionsAsync(int fileId, int storeId)
+    {
+        var items = await fileApi.GetTransactionsAsync(fileId, storeId);
+        return new JsonResult(items);
     }
 
     public async Task<IActionResult> OnPostUploadAsync(List<IFormFile> files)

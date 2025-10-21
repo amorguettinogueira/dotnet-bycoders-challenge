@@ -8,12 +8,17 @@ using Bcp.Infrastructure.Configuration;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
-var connectionString = ConnectionStringBuilder.BuildFromEnvironment();
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddApplication();
-builder.Services.AddInfrastructure(connectionString);
+
+// In tests, we don't want to wire real infrastructure against a DB; the test replaces services
+if (!string.Equals(builder.Environment.EnvironmentName, "Testing", StringComparison.OrdinalIgnoreCase))
+{
+    var connectionString = ConnectionStringBuilder.BuildFromEnvironment();
+    _ = builder.Services.AddInfrastructure(connectionString);
+}
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -42,7 +47,12 @@ builder.Services.AddSignalR();
 builder.Services.AddSingleton<INotificationPublisher, NotificationPublisher>();
 
 var app = builder.Build();
-app.ApplyMigrations();
+
+if (!string.Equals(app.Environment.EnvironmentName, "Testing", StringComparison.OrdinalIgnoreCase))
+{
+    app.ApplyMigrations();
+}
+
 _ = app.UseSwagger();
 _ = app.UseSwaggerUI(c =>
 {
@@ -56,3 +66,9 @@ _ = app.UseHttpsRedirection();
 _ = app.MapControllers();
 app.MapHub<NotificationsHub>("/hubs/notifications");
 app.Run();
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
+public partial class Program { }
+
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member

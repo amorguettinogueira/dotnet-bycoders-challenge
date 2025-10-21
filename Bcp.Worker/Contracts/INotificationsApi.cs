@@ -1,5 +1,5 @@
-using Refit;
 using Bcp.Application.DTOs;
+using Refit;
 
 namespace Bcp.Worker.Contracts;
 

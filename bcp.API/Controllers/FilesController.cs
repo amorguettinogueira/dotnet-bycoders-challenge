@@ -51,6 +51,24 @@ public class FilesController(ITransactionFileService service,
     }
 
     /// <summary>
+    /// Gets transactions for a given file and store, sorted by date and time.
+    /// </summary>
+    /// <param name="fileId">File identifier.</param>
+    /// <param name="storeId">Store identifier.</param>
+    /// <remarks>
+    /// Returns a lightweight list with transaction type description, date, time and signed value.
+    /// </remarks>
+    /// <response code="200">The transactions for the file and store.</response>
+    [HttpGet("{fileId}/stores/{storeId}/transactions")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(List<TransactionItem>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<TransactionItem>>> GetTransactions(int fileId, int storeId)
+    {
+        var items = await service.GetTransactionsAsync(fileId, storeId);
+        return Ok(items);
+    }
+
+    /// <summary>
     /// Uploads a CNAB `.txt` file for processing.
     /// </summary>
     /// <param name="file">The file to upload (form field name: <c>file</c>).</param>
@@ -78,12 +96,12 @@ public class FilesController(ITransactionFileService service,
             return BadRequest("Invalid file type. Only .txt files are allowed.");
         }
 
-        Directory.CreateDirectory(_uploadPath);
+        _ = Directory.CreateDirectory(_uploadPath);
 
         var fileName = Path.GetFileName(file.FileName);
         var filePath = $"{_uploadPath}/{fileName}"; // Use forward slashes for Linux containers
 
-        using var stream = new FileStream(filePath, FileMode.Create);
+        await using var stream = new FileStream(filePath, FileMode.Create);
         await file.CopyToAsync(stream);
 
         // Notify with just the file name; worker will resolve full path within its container

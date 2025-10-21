@@ -2,7 +2,6 @@ using Bcp.Application.Contracts;
 using Bcp.Application.Interfaces;
 using Bcp.Infrastructure.Contracts;
 using Bcp.Infrastructure.Persistence;
-using Bcp.Infrastructure.Repositories;
 using Bcp.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

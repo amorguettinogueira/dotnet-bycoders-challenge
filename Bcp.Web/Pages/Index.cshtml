@@ -1,11 +1,28 @@
 ﻿@page
 @model IndexModel
 
-<div class="row flex-nowrap">
+@section OffcanvasFiles {
     @if (Model.Files.Any())
     {
-        <!-- Sidebar -->
-        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark text-white">
+        <div class="list-group">
+            @foreach (var file in Model.Files)
+            {
+                <a class="list-group-item list-group-item-action @(Model.SelectedFileId == file.FileId ? "active" : "")"
+                   asp-page-handler="Select" asp-route-id="@file.FileId">@file.FileName</a>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-muted">No files available.</p>
+    }
+}
+
+<div class="row flex-nowrap" data-selected-file-id="@(Model.SelectedFileId?.ToString() ?? string.Empty)">
+    @if (Model.Files.Any())
+    {
+        <!-- Sidebar (hidden on small screens) -->
+        <div class="d-none d-md-block col-md-3 col-xl-2 px-sm-2 px-0 bg-dark text-white">
             <div class="d-flex flex-column align-items-start px-3 pt-2 min-vh-100">
                 <h5 class="text-white">Files</h5>
                 <ul class="nav nav-pills flex-column mb-auto">
@@ -26,29 +43,42 @@
         <div class="col py-3 d-flex flex-column" style="min-height: 0;">
             <!-- Store Summary -->
             <div class="card mb-3 flex-grow-1 d-flex flex-column">
-                <div class="card-header">
+                <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
                     <h4 class="mb-0">Store Summary</h4>
+                    @if (Model.SelectedFileId is not null)
+                    {
+                        <span class="badge bg-secondary">File #@Model.SelectedFileId</span>
+                    }
                 </div>
                 <div class="card-body overflow-auto">
                     @if (Model.AggregatedData.Stores.Any())
                     {
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Store Name</th>
-                                    <th>Total Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.AggregatedData.Stores)
-                                {
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle" id="storeTable">
+                                <thead>
                                     <tr>
-                                        <td>@item.StoreName</td>
-                                        <td>@item.Balance.ToString("C2")</td>
+                                        <th>Store Name</th>
+                                        <th class="text-end">Total Amount</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.AggregatedData.Stores)
+                                    {
+                                        <tr data-store-id="@item.StoreId" style="cursor:pointer" title="Tap to view transactions">
+                                            <td>@item.StoreName</td>
+                                            <td class="text-end">@item.Balance.ToString("C2")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Total</th>
+                                        <th class="text-end">@Model.AggregatedData.Stores.Sum(s => s.Balance).ToString("C2")</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <small class="text-muted">Tap a row to toggle transactions for that store.</small>
                     }
                     else
                     {
@@ -66,21 +96,23 @@
                     @{ var hasErrors = Model.AggregatedData.Error.Any(); }
                     @if (hasErrors)
                     {
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Error Message</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var error in Model.AggregatedData.Error)
-                                {
+                        <div class="table-responsive">
+                            <table class="table table-striped align-middle">
+                                <thead>
                                     <tr>
-                                        <td class="text-danger">@error</td>
+                                        <th>Error Message</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach (var error in Model.AggregatedData.Error)
+                                    {
+                                        <tr>
+                                            <td class="text-danger">@error</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     }
                     else
                     {
@@ -100,3 +132,7 @@
         </div>
     }
 </div>
+
+@section Scripts {
+    <script src="~/js/drilldown.js" asp-append-version="true"></script>
+}

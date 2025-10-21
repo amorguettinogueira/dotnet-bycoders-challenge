@@ -1,7 +1,7 @@
 using Bcp.Domain.Enums;
 using Bcp.Domain.Models;
 using Bcp.Infrastructure.Persistence;
-using Bcp.Infrastructure.Repositories;
+using Bcp.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bcp.Infrastructure.Tests;

@@ -4,7 +4,7 @@ using Bcp.Domain.Enums;
 using Bcp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace Bcp.Infrastructure.Repositories;
+namespace Bcp.Infrastructure.Services;
 
 public class TransactionFileService(AppDbContext db) : ITransactionFileService
 {
@@ -44,4 +44,18 @@ public class TransactionFileService(AppDbContext db) : ITransactionFileService
                     : fe.Error)
                 .ToArrayAsync(),
         };
+
+    public async Task<List<TransactionItem>> GetTransactionsAsync(int fileId, int storeId) =>
+        await db.Transactions
+            .Where(t => t.FileId == fileId && t.StoreId == storeId)
+            .OrderBy(t => t.DateOfOccurrence)
+            .ThenBy(t => t.TimeOfOccurrence)
+            .Select(t => new TransactionItem
+            {
+                TransactionType = t.TransactionType.Description,
+                Date = t.DateOfOccurrence,
+                Time = t.TimeOfOccurrence,
+                Value = t.TransactionType.Nature == TransactionNature.Expense ? -t.TransactionAmount : t.TransactionAmount
+            })
+            .ToListAsync();
 }

@@ -1,6 +1,6 @@
 using Bcp.Application.Contracts;
-using Microsoft.AspNetCore.Mvc;
 using Bcp.Application.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Bcp.API.Controllers;
 
