@@ -116,17 +116,17 @@ Real-time updates: When the worker finishes processing a file, the API publishes
 
 ### Diagram
 ```mermaid
-graph TD;
-    A[User Browser] -->|Upload .txt| B[Web UI (Razor Pages)];
-    B -->|POST multipart| C[API /api/files/upload];
-    C -->|Write file| V[(shared-data volume\n/app/uploads)];
-    C -->|Insert Pending| D[(PostgreSQL)];
-    W[Worker Service] -->|Poll Pending| D;
-    W -->|Read file| V;
-    W -->|Process + persist| D;
-    W -->|POST processed| N[API /api/notifications/file-processed];
-    N -->|Broadcast FileProcessed| H[SignalR Hub];
-    H -->|Auto-refresh| A;
+flowchart TD
+    A["User Browser"] -->|"Upload .txt"| B["Web UI - Razor Pages"]
+    B -->|"POST multipart"| C["API /api/files/upload"]
+    C -->|"Write file"| V["shared-data volume<br/>/app/uploads"]
+    C -->|"Insert Pending"| D[(PostgreSQL)]
+    W["Worker Service"] -->|"Poll Pending"| D
+    W -->|"Read file"| V
+    W -->|"Process + persist"| D
+    W -->|"POST processed"| N["API /api/notifications/file-processed"]
+    N -->|"Broadcast FileProcessed"| H["SignalR Hub"]
+    H -->|"Auto-refresh"| A
 ```
 
 Uploads are shared via a Docker volume mounted at `/app/uploads` for API and Worker. Data protection keys for the Web UI are persisted in a shared volume at `/root/.aspnet/DataProtection-Keys`.
