@@ -1,4 +1,6 @@
-﻿namespace bcp.Infrastructure.Configuration;
+﻿using DotNetEnv;
+
+namespace Bcp.Infrastructure.Configuration;
 
 public static class ConnectionStringBuilder
 {
@@ -9,6 +11,11 @@ public static class ConnectionStringBuilder
 
     public static string BuildFromEnvironment()
     {
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(PostgresDb)))
+        {
+            _ = Env.Load(Path.Combine(Directory.GetCurrentDirectory(), "..", ".env"));
+        }
+
         var dbName = Environment.GetEnvironmentVariable(PostgresDb) ??
             throw new InvalidDataException(string.Format(MissingEnvironmentVariable, PostgresDb));
         var dbUser = Environment.GetEnvironmentVariable(PostgresUser) ??

@@ -1,7 +1,7 @@
 @echo off
 
 echo Running unit tests...
-dotnet test bcp.sln --nologo --verbosity minimal
+dotnet test Bcp.sln --nologo --verbosity minimal
 
 IF %ERRORLEVEL% NEQ 0 (
     echo Tests failed. Aborting Docker Compose.

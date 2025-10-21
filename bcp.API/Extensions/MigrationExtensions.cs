@@ -1,7 +1,7 @@
-﻿using bcp.Infrastructure.Persistence;
+﻿using Bcp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace bcp.API.Extensions;
+namespace Bcp.API.Extensions;
 
 /// <summary>
 /// Db migrations extensions.

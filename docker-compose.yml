@@ -1,4 +1,8 @@
 # docker-compose.yml
+volumes:
+  shared-data:
+  dbdata:
+
 services:
   db:
     image: postgres:16
@@ -19,7 +23,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: api.Dockerfile
+      dockerfile: Bcp.API.Dockerfile
     image: bcp.api:0.0.0
     container_name: bcp-api
     ports:
@@ -33,17 +37,39 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      WEB_BASE_URL: "http://web:5000"
+    volumes:
+      - shared-data:/app/uploads
 
-  ui:
+  worker:
     build:
       context: .
-      dockerfile: ui.Dockerfile
-    image: bcp.ui:0.0.0
-    container_name: bcp-ui
+      dockerfile: Bcp.Worker.Dockerfile
+    image: bcp.worker:0.0.0
+    container_name: bcp-worker
+    ports:
+      - "5555:5555"
+    depends_on:
+      - api
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - shared-data:/app/uploads
+
+  web:
+    build:
+      context: .
+      dockerfile: Bcp.Web.Dockerfile
+    image: bcp.web:0.0.0
+    container_name: bcp-web
     ports:
       - "5000:8080"
     depends_on:
       - api
-
-volumes:
-  dbdata:
+    environment:
+      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT:-development}"
+      API_BASE_URL: "http://api:5163"
+    volumes:
+      - shared-data:/root/.aspnet/DataProtection-Keys

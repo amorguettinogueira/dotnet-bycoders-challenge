@@ -1,0 +1,102 @@
+﻿@page
+@model IndexModel
+
+<div class="row flex-nowrap">
+    @if (Model.Files.Any())
+    {
+        <!-- Sidebar -->
+        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark text-white">
+            <div class="d-flex flex-column align-items-start px-3 pt-2 min-vh-100">
+                <h5 class="text-white">Files</h5>
+                <ul class="nav nav-pills flex-column mb-auto">
+                    @foreach (var file in Model.Files)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-white @(Model.SelectedFileId == file.FileId ? "active" : "")"
+                               asp-page-handler="Select" asp-route-id="@file.FileId">
+                                @file.FileName
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col py-3 d-flex flex-column" style="min-height: 0;">
+            <!-- Store Summary -->
+            <div class="card mb-3 flex-grow-1 d-flex flex-column">
+                <div class="card-header">
+                    <h4 class="mb-0">Store Summary</h4>
+                </div>
+                <div class="card-body overflow-auto">
+                    @if (Model.AggregatedData.Stores.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Store Name</th>
+                                    <th>Total Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.AggregatedData.Stores)
+                                {
+                                    <tr>
+                                        <td>@item.StoreName</td>
+                                        <td>@item.Balance.ToString("C2")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No transaction summary for this file.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Errors (auto size up to 33vh) -->
+            <div class="card" style="max-height: 33vh;">
+                <div class="card-header">
+                    <h5 class="mb-0">File Upload Errors</h5>
+                </div>
+                <div class="card-body overflow-auto">
+                    @{ var hasErrors = Model.AggregatedData.Error.Any(); }
+                    @if (hasErrors)
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Error Message</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var error in Model.AggregatedData.Error)
+                                {
+                                    <tr>
+                                        <td class="text-danger">@error</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">No errors found for the selected file.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col py-3">
+            <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">No Files Available</h4>
+                <p class="mb-0">Import a file to start viewing transaction summaries.</p>
+            </div>
+        </div>
+    }
+</div>

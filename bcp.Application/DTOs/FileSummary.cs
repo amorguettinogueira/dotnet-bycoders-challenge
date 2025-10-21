@@ -1,7 +1,7 @@
-﻿namespace bcp.Application.DTOs;
+﻿namespace Bcp.Application.DTOs;
 
 public class FileSummary
 {
-    public int FileId { get; set; }
-    public required string FileName { get; set; }
+    public IEnumerable<StoreAggregation> Stores { get; set; } = [];
+    public IEnumerable<string> Error { get; set; } = [];
 }

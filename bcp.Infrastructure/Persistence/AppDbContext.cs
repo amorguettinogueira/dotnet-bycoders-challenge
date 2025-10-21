@@ -1,8 +1,8 @@
-using bcp.Core.Enums;
-using bcp.Core.Models;
+using Bcp.Domain.Enums;
+using Bcp.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace bcp.Infrastructure.Persistence;
+namespace Bcp.Infrastructure.Persistence;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
@@ -33,40 +33,31 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             _ = entity.HasKey(s => s.StoreId);
             _ = entity.Property(s => s.StoreName).IsRequired().HasMaxLength(19);
             _ = entity.Property(s => s.OwnerName).IsRequired().HasMaxLength(14);
+            _ = entity.HasAlternateKey(b => new { b.StoreName, b.OwnerName }); // Composite uniqueness
+            _ = entity.Property(b => b.StoreId).ValueGeneratedOnAdd();
         });
 
         _ = modelBuilder.Entity<Beneficiary>(entity =>
-        {
-            _ = entity.HasKey(b => b.BeneficiaryId);
-            _ = entity.Property(b => b.Cpf).IsRequired().HasMaxLength(11);
-            _ = entity.Property(b => b.Card).IsRequired().HasMaxLength(12);
-            _ = entity.HasAlternateKey(b => new { b.Cpf, b.Card }); // Composite uniqueness
-        });
+    {
+        _ = entity.HasKey(b => b.BeneficiaryId);
+        _ = entity.Property(b => b.Cpf).IsRequired().HasMaxLength(11);
+        _ = entity.Property(b => b.Card).IsRequired().HasMaxLength(12);
+        _ = entity.HasAlternateKey(b => new { b.Cpf, b.Card }); // Composite uniqueness
+        _ = entity.Property(b => b.BeneficiaryId).ValueGeneratedOnAdd();
+    });
 
-        _ = modelBuilder.Entity<Core.Models.File>(entity =>
+        _ = modelBuilder.Entity<Bcp.Domain.Models.File>(entity =>
         {
             _ = entity.HasKey(f => f.FileId);
-            _ = entity.Property(f => f.FileSize).IsRequired();
-            _ = entity.Property(f => f.FileHash).IsRequired().HasMaxLength(32); // Based on MD5 hash format 32 in length
-            _ = entity.HasIndex(f => new { f.FileSize, f.FileHash }).IsUnique(); // Enforces deduplication
-            _ = entity.HasMany(f => f.FileNames)
-                  .WithOne(fn => fn.File)
-                  .HasForeignKey(fn => fn.FileId)
-                  .IsRequired()
-                  .OnDelete(DeleteBehavior.Cascade);
             _ = entity.HasMany(f => f.Transactions)
                   .WithOne(fn => fn.File)
                   .HasForeignKey(fn => fn.FileId)
-                  .IsRequired()
                   .OnDelete(DeleteBehavior.Cascade);
-        });
-
-        _ = modelBuilder.Entity<FileName>(entity =>
-        {
-            _ = entity.HasKey(fn => fn.FileNameId);
-            _ = entity.Property(fn => fn.Name).IsRequired().HasMaxLength(255); // Adjust based on filename limits
-            _ = entity.Property(fn => fn.FileId).IsRequired();
-            _ = entity.HasIndex(fn => new { fn.FileId, fn.Name }).IsUnique(); // Prevent duplicate names for the same file
+            _ = entity.HasMany(f => f.Error)
+                  .WithOne(fn => fn.File)
+                  .HasForeignKey(fn => fn.FileId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            _ = entity.Property(b => b.FileId).ValueGeneratedOnAdd();
         });
 
         _ = modelBuilder.Entity<Transaction>(entity =>
@@ -76,11 +67,32 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             _ = entity.HasOne(t => t.Beneficiary).WithMany().HasForeignKey(t => t.BeneficiaryId).IsRequired();
             _ = entity.HasOne(t => t.Store).WithMany().HasForeignKey(t => t.StoreId).IsRequired();
             _ = entity.HasOne(t => t.TransactionType).WithMany().HasForeignKey(t => t.TransactionTypeId).IsRequired();
+            _ = entity.Property(b => b.TransactionId).ValueGeneratedOnAdd();
+        });
+
+        _ = modelBuilder.Entity<FileError>(entity =>
+        {
+            _ = entity.HasKey(t => new { t.ErrorId });
+            _ = entity.HasOne(t => t.File).WithMany(f => f.Error).HasForeignKey(t => t.FileId).IsRequired();
+            _ = entity.Property(b => b.Error).IsRequired();
+            _ = entity.Property(b => b.ErrorId).ValueGeneratedOnAdd();
+        });
+
+        _ = modelBuilder.Entity<FileNotification>(entity =>
+        {
+            _ = entity.HasKey(b => b.FileNotificationId);
+            _ = entity.Property(b => b.FileName).IsRequired().HasMaxLength(255);
+            _ = entity.Property(b => b.CreatedAt).IsRequired();
+            _ = entity.Property(b => b.Status).IsRequired();
+            _ = entity.HasIndex(b => b.Status);
+            _ = entity.Property(b => b.FileNotificationId).ValueGeneratedOnAdd();
         });
     }
 
-    public DbSet<Core.Models.File> Files { get; set; }
-    public DbSet<FileName> FileNames { get; set; }
+    public DbSet<Bcp.Domain.Models.File> Files { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Store> Stores { get; set; }
+    public DbSet<Beneficiary> Beneficiaries { get; set; }
+    public DbSet<FileNotification> FileNotifications { get; set; }
+    public DbSet<FileError> FileError { get; set; }
 }

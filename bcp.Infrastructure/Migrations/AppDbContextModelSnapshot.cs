@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using bcp.Infrastructure.Persistence;
+using Bcp.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace bcp.Infrastructure.Migrations
+namespace Bcp.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -44,7 +44,7 @@ namespace bcp.Infrastructure.Migrations
 
                     b.HasAlternateKey("Cpf", "Card");
 
-                    b.ToTable("Beneficiary");
+                    b.ToTable("Beneficiaries");
                 });
 
             modelBuilder.Entity("bcp.Core.Models.File", b =>
@@ -55,44 +55,64 @@ namespace bcp.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("FileId"));
 
-                    b.Property<string>("FileHash")
+                    b.Property<string>("FileName")
                         .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("character varying(32)");
-
-                    b.Property<long>("FileSize")
-                        .HasColumnType("bigint");
+                        .HasColumnType("text");
 
                     b.HasKey("FileId");
-
-                    b.HasIndex("FileSize", "FileHash")
-                        .IsUnique();
 
                     b.ToTable("Files");
                 });
 
-            modelBuilder.Entity("bcp.Core.Models.FileName", b =>
+            modelBuilder.Entity("bcp.Core.Models.FileError", b =>
                 {
-                    b.Property<int>("FileNameId")
+                    b.Property<int>("ErrorId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("FileNameId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ErrorId"));
+
+                    b.Property<string>("Error")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("FileId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("Name")
+                    b.Property<int?>("LineNumber")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ErrorId");
+
+                    b.HasIndex("FileId");
+
+                    b.ToTable("FileError");
+                });
+
+            modelBuilder.Entity("bcp.Core.Models.FileNotification", b =>
+                {
+                    b.Property<int>("FileNotificationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("FileNotificationId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FileName")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.HasKey("FileNameId");
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("FileId", "Name")
-                        .IsUnique();
+                    b.HasKey("FileNotificationId");
 
-                    b.ToTable("FileNames");
+                    b.HasIndex("Status");
+
+                    b.ToTable("FileNotifications");
                 });
 
             modelBuilder.Entity("bcp.Core.Models.Store", b =>
@@ -115,6 +135,8 @@ namespace bcp.Infrastructure.Migrations
 
                     b.HasKey("StoreId");
 
+                    b.HasAlternateKey("StoreName", "OwnerName");
+
                     b.ToTable("Stores");
                 });
 
@@ -129,8 +151,8 @@ namespace bcp.Infrastructure.Migrations
                     b.Property<int>("BeneficiaryId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("DateOfOccurrence")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateOnly>("DateOfOccurrence")
+                        .HasColumnType("date");
 
                     b.Property<int>("FileId")
                         .HasColumnType("integer");
@@ -236,10 +258,10 @@ namespace bcp.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("bcp.Core.Models.FileName", b =>
+            modelBuilder.Entity("bcp.Core.Models.FileError", b =>
                 {
                     b.HasOne("bcp.Core.Models.File", "File")
-                        .WithMany("FileNames")
+                        .WithMany("Error")
                         .HasForeignKey("FileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -284,7 +306,7 @@ namespace bcp.Infrastructure.Migrations
 
             modelBuilder.Entity("bcp.Core.Models.File", b =>
                 {
-                    b.Navigation("FileNames");
+                    b.Navigation("Error");
 
                     b.Navigation("Transactions");
                 });

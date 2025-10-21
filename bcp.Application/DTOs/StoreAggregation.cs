@@ -1,4 +1,4 @@
-﻿namespace bcp.Application.DTOs;
+﻿namespace Bcp.Application.DTOs;
 
 public class StoreAggregation
 {

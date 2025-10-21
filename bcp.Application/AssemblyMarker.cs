@@ -1,3 +1,3 @@
-namespace bcp.Application;
+namespace Bcp.Application;
 
 public class AssemblyMarker { }

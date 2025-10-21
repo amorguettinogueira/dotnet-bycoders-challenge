@@ -1,6 +1,6 @@
-﻿using bcp.Infrastructure.Configuration;
+﻿using Bcp.Infrastructure.Configuration;
 
-namespace bcp.Infrastructure.Tests;
+namespace Bcp.Infrastructure.Tests;
 
 public class ConnectionStringBuilderTests
 {

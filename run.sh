@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Running unit tests..."
-dotnet test bcp.sln --nologo --verbosity minimal
+dotnet test Bcp.sln --nologo --verbosity minimal
 
 if [ $? -ne 0 ]; then
   echo "Tests failed. Aborting Docker Compose."

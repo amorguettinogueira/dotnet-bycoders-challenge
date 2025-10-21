@@ -9,12 +9,13 @@
   <ItemGroup>
     <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-    <ProjectReference Include="..\bcp.Core\bcp.Core.csproj" />
+    <ProjectReference Include="..\Bcp.Domain\Bcp.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\bcp.Application\bcp.Application.csproj" />
-    <ProjectReference Include="..\bcp.Infrastructure\bcp.Infrastructure.csproj" />
+    <ProjectReference Include="..\Bcp.Application\Bcp.Application.csproj" />
+    <ProjectReference Include="..\Bcp.Infrastructure\Bcp.Infrastructure.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
